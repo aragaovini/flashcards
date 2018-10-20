@@ -1,9 +1,17 @@
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TouchableHighlight,
+  Vibration,
+  Alert
+} from "react-native";
 import { getDecks } from "../api";
 import ListItem from "../components/ListItem";
 import { connect } from "react-redux";
-import { getAllDecks } from "../actions/decks";
+import { getAllDecks, deleteDeckById } from "../actions/decks";
 
 class Home extends React.Component {
   state = {
@@ -16,6 +24,24 @@ class Home extends React.Component {
 
   componentWillReceiveProps = ({ decks }) => {
     this.setState({ decks });
+  };
+
+  askToRemove = deck => {
+    const { deleteDeck } = this.props;
+    Vibration.vibrate(1000);
+    Alert.alert(
+      "Would you like to remove this deck?",
+      `The ${deck.title} will be lost forever.`,
+      [
+        {
+          text: "No!"
+        },
+        {
+          text: "Yes",
+          onPress: () => deleteDeck(deck.id)
+        }
+      ]
+    );
   };
 
   render() {
@@ -34,11 +60,17 @@ class Home extends React.Component {
           decks.length &&
           decks.map((deck, index) => {
             return (
-              <ListItem
+              <TouchableHighlight
                 key={index}
-                deckTitle={deck.title}
-                totalCards={deck.cards.length}
-              />
+                onLongPress={() => {
+                  this.askToRemove(deck);
+                }}
+              >
+                <ListItem
+                  deckTitle={deck.title}
+                  totalCards={deck.cards.length}
+                />
+              </TouchableHighlight>
             );
           })}
       </View>
@@ -79,7 +111,8 @@ const MapStateToProps = store => {
 };
 
 const MapDispatchToProps = dispatch => ({
-  getDecks: () => dispatch(getAllDecks())
+  getDecks: () => dispatch(getAllDecks()),
+  deleteDeck: id => dispatch(deleteDeckById(id))
 });
 
 export default connect(MapStateToProps, MapDispatchToProps)(Home);

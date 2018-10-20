@@ -1,5 +1,5 @@
-import { getDecks, addDeck } from "../api";
-import { GET_DECKS, ADD_DECK } from "../constants/actionTypes";
+import { getDecks, addDeck, removeDeck } from "../api";
+import { GET_DECKS, ADD_DECK, REMOVE_DECK } from "../constants/actionTypes";
 
 export function listDecks(decks) {
   return {
@@ -12,6 +12,13 @@ export function addNewDeck(deck) {
   return {
     type: ADD_DECK,
     deck
+  };
+}
+
+export function deleteDeck(id) {
+  return {
+    type: REMOVE_DECK,
+    id
   };
 }
 
@@ -30,6 +37,14 @@ export function insertDeck(deck, successCallback) {
     addDeck(deck).then(() => {
       dispatch(addNewDeck(deck));
       if (successCallback) successCallback();
+    });
+  };
+}
+
+export function deleteDeckById(id) {
+  return dispatch => {
+    removeDeck(id).then(() => {
+      dispatch(deleteDeck(id));
     });
   };
 }

@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     paddingRight: 0,
     alignItems: "flex-start",
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    borderColor: "#e2e2e2"
   },
   deckTitle: {
     fontWeight: "600",
