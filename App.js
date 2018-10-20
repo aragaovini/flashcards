@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "react-navigation";
 import Home from "./screens/Home";
-import AddDeck from "./screens/AddDeck";
+import DeckForm from "./screens/DeckForm";
 import { Provider } from "react-redux";
 import Store from "./store";
 
@@ -12,8 +12,8 @@ const Stack = createStackNavigator({
       title: "Decks"
     }
   },
-  AddDeck: {
-    screen: AddDeck
+  DeckForm: {
+    screen: DeckForm
   }
 });
 

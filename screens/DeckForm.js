@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
-import { addDeck } from "../api";
+import { connect } from "react-redux";
+import { insertDeck } from "../actions/decks";
 
-export default class AddDeck extends React.Component {
+class DeckForm extends React.Component {
   state = {
     deckName: "My deck"
   };
@@ -14,7 +15,7 @@ export default class AddDeck extends React.Component {
       cards: []
     };
 
-    addDeck(deck).then(() => {
+    this.props.saveDeck(deck, () => {
       this.setState({ deckName: "" });
       this.props.navigation.navigate("Home");
     });
@@ -64,3 +65,10 @@ const styles = StyleSheet.create({
     color: "#fff"
   }
 });
+
+const MapDispatchToProps = dispatch => ({
+  saveDeck: (deck, successCallback) =>
+    dispatch(insertDeck(deck, successCallback))
+});
+
+export default connect(null, MapDispatchToProps)(DeckForm);

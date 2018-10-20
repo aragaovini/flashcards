@@ -27,7 +27,7 @@ class Home extends React.Component {
           <Button
             title="Add Deck"
             style={styles.buttonDefault}
-            onPress={() => this.props.navigation.navigate("AddDeck")}
+            onPress={() => this.props.navigation.navigate("DeckForm")}
           />
         </View>
         {decks &&
