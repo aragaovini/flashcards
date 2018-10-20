@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   deckTitle: {
     fontWeight: "600",
-    fontSize: 24,
+    fontSize: 18,
     marginBottom: 8
   }
 });
