@@ -2,22 +2,21 @@ import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { getDecks } from "../api";
 import ListItem from "../components/ListItem";
+import { connect } from "react-redux";
+import { getAllDecks } from "../actions/decks";
 
-export default class Home extends React.Component {
+class Home extends React.Component {
   state = {
     decks: []
   };
 
   componentDidMount() {
-    getDecks().then(response => {
-      let decks = [];
-      let resp = JSON.parse(response);
-      if (resp) {
-        decks = resp.decks;
-      }
-      this.setState({ decks });
-    });
+    this.props.getDecks();
   }
+
+  componentWillReceiveProps = ({ decks }) => {
+    this.setState({ decks });
+  };
 
   render() {
     const { decks } = this.state;
@@ -72,3 +71,15 @@ const styles = StyleSheet.create({
     color: "#fff"
   }
 });
+
+const MapStateToProps = store => {
+  return {
+    decks: store.decks
+  };
+};
+
+const MapDispatchToProps = dispatch => ({
+  getDecks: () => dispatch(getAllDecks())
+});
+
+export default connect(MapStateToProps, MapDispatchToProps)(Home);
