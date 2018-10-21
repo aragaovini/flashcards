@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect } from "react-redux";
 import { insertDeck } from "../actions/decks";
+import uuidv1 from "uuid/v1";
 
 class DeckForm extends React.Component {
   state = {
@@ -10,14 +11,18 @@ class DeckForm extends React.Component {
 
   saveDeck = () => {
     const { deckName } = this.state;
+    const id = uuidv1();
     let deck = {
+      id,
       title: deckName,
       cards: []
     };
 
     this.props.saveDeck(deck, () => {
       this.setState({ deckName: "" });
-      this.props.navigation.navigate("Home");
+      this.props.navigation.navigate("DeckDetails", {
+        deckId: id
+      });
     });
   };
 

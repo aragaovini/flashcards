@@ -5,7 +5,6 @@ import {
   REMOVE_DECK,
   GET_DECK
 } from "../constants/actionTypes";
-import uuidv1 from "uuid/v1";
 
 export function listDecks(decks) {
   return {
@@ -46,7 +45,6 @@ export function getAllDecks() {
 }
 
 export function insertDeck(deck, successCallback) {
-  deck.id = uuidv1();
   return dispatch => {
     addDeck(deck).then(() => {
       dispatch(addNewDeck(deck));

@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect } from "react-redux";
 import { addNewCard } from "../actions/cards";
+import uuidv1 from "uuid/v1";
 
 class CardForm extends React.Component {
   state = {
@@ -13,7 +14,9 @@ class CardForm extends React.Component {
     const { deck } = this.props.navigation.state.params;
     const { question, answer } = this.state;
     const { navigation, addCard } = this.props;
+    const id = uuidv1();
     let card = {
+      id,
       question,
       answer
     };

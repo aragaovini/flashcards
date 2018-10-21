@@ -6,7 +6,6 @@ export function addDeck(deck) {
     store = JSON.parse(store);
     let decks = store ? store.decks : [];
     decks.push(deck);
-
     return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify({ decks }));
   });
 }

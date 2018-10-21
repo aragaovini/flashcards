@@ -15,13 +15,22 @@ const Stack = createStackNavigator({
     }
   },
   DeckForm: {
-    screen: DeckForm
+    screen: DeckForm,
+    navigationOptions: {
+      title: "Deck Form"
+    }
   },
   DeckDetails: {
-    screen: DeckDetails
+    screen: DeckDetails,
+    navigationOptions: {
+      title: "Deck Details"
+    }
   },
   CardForm: {
-    screen: CardForm
+    screen: CardForm,
+    navigationOptions: {
+      title: "Card Form"
+    }
   }
 });
 

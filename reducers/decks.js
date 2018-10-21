@@ -15,13 +15,13 @@ export function decks(state = [], action) {
       return updatedState;
     case REMOVE_DECK:
       const newState = state.filter(deck => {
-        return deck.id != action.id;
+        return deck.id !== action.id;
       });
       return newState;
     case ADD_CARD:
       const { deckId, card } = action;
       let deck = state.filter(deck => {
-        return (deck.id = deckId);
+        return deck.id === deckId;
       })[0];
       deck.cards.push(card);
       return state.map(deckItem => {
