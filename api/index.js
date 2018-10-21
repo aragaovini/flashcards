@@ -1,9 +1,7 @@
 import { AsyncStorage } from "react-native";
 import { DECK_STORAGE_KEY } from "../constants/api";
-import uuidv1 from "uuid/v1";
 
 export function addDeck(deck) {
-  deck.id = uuidv1();
   return getDecks().then(store => {
     store = JSON.parse(store);
     let decks = store ? store.decks : [];
@@ -27,4 +25,27 @@ export function removeDeck(id) {
 export function getDecks() {
   // AsyncStorage.clear();
   return AsyncStorage.getItem(DECK_STORAGE_KEY);
+}
+
+export function addCardToDeck(deckId, card) {
+  return getDecks().then(store => {
+    store = JSON.parse(store);
+    let decks = store ? store.decks : [];
+
+    // Adding the card to the specific deck
+    let deck = decks.filter(deck => {
+      return deck.id === deckId;
+    })[0];
+    deck.cards.push(card);
+
+    // Updating the deck
+    decks.map(deckItem => {
+      if (deckItem.id === deckId) {
+        deckItem = deck;
+      }
+      return deckItem;
+    });
+
+    return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify({ decks }));
+  });
 }

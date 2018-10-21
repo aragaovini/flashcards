@@ -62,6 +62,11 @@ class Home extends React.Component {
             return (
               <TouchableHighlight
                 key={index}
+                onPress={() => {
+                  this.props.navigation.navigate("DeckDetails", {
+                    deckId: deck.id
+                  });
+                }}
                 onLongPress={() => {
                   this.askToRemove(deck);
                 }}

@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
+import CardCounter from "./CardCounter";
 
 export default class App extends React.Component {
   render() {
@@ -8,7 +9,7 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <Text style={styles.deckTitle}>{deckTitle}</Text>
         <Text>
-          {totalCards} {totalCards > 1 ? "cards" : "card"}
+          <CardCounter totalCards={totalCards} />
         </Text>
       </View>
     );
