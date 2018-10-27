@@ -61,7 +61,7 @@ export function deleteDeckById(id) {
   };
 }
 
-export function getDeckById(id) {
+export function getDeckById(id, callback) {
   return dispatch => {
     getDecks().then(response => {
       let resp = JSON.parse(response);
@@ -69,6 +69,7 @@ export function getDeckById(id) {
       const deck = decks.filter(deckItem => {
         return deckItem.id === id;
       })[0];
+      if (callback) callback();
       dispatch(getDeck(deck));
     });
   };

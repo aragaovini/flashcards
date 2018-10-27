@@ -48,3 +48,34 @@ export function addCardToDeck(deckId, card) {
     return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify({ decks }));
   });
 }
+
+export function answerCardInDeck(deckId, card) {
+  return getDecks().then(store => {
+    store = JSON.parse(store);
+    let decks = store ? store.decks : [];
+
+    // Updating the card in the specific deck
+    let deck = decks.filter(deck => {
+      return deck.id === deckId;
+    })[0];
+
+    deck.cards =
+      deck.cards &&
+      deck.cards.map(cardItem => {
+        if (cardItem.id === card.id) {
+          cardItem = card;
+        }
+        return cardItem;
+      });
+
+    // Updating the deck
+    decks = decks.map(deckItem => {
+      if (deckItem.id === deckId) {
+        deckItem = deck;
+      }
+      return deckItem;
+    });
+
+    return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify({ decks }));
+  });
+}

@@ -3,7 +3,8 @@ import {
   ADD_DECK,
   REMOVE_DECK,
   ADD_CARD,
-  GET_DECK
+  GET_DECK,
+  UPDATE_CARD
 } from "../constants/actionTypes";
 
 export function decks(state = [], action) {
@@ -39,6 +40,19 @@ export function deck(state = {}, action) {
   switch (action.type) {
     case GET_DECK:
       return action.deck;
+    case UPDATE_CARD:
+      const { card } = action;
+      const updatedCards =
+        state.cards &&
+        state.cards.map(cardItem => {
+          if (cardItem.id === card.id) {
+            cardItem = card;
+          }
+          return cardItem;
+        });
+      const newState = state;
+      newState.cards = updatedCards;
+      return newState;
     default:
       return state;
   }

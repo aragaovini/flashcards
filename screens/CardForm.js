@@ -11,16 +11,19 @@ class CardForm extends React.Component {
   };
 
   setCardToDeck = () => {
-    const { deck } = this.props.navigation.state.params;
+    const { deck, refreshDeck } = this.props.navigation.state.params;
     const { question, answer } = this.state;
     const { navigation, addCard } = this.props;
     const id = uuidv1();
     let card = {
       id,
       question,
-      answer
+      answer,
+      result: null,
+      answered: false
     };
     addCard(deck.id, card, () => {
+      refreshDeck();
       navigation.navigate("DeckDetails", { deckId: deck.id });
     });
   };

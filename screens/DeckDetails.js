@@ -21,6 +21,9 @@ class DeckDetails extends React.Component {
 
   componentWillReceiveProps({ deck, deckId }) {
     this.setState({ deck });
+  }
+
+  refreshDeck() {
     this.props.getDeck(this.state.deckId);
   }
 
@@ -35,13 +38,18 @@ class DeckDetails extends React.Component {
         />
         <Button
           onPress={() => {
-            this.props.navigation.navigate("CardForm", { deck });
+            this.props.navigation.navigate("CardForm", {
+              deck,
+              refreshDeck: () => {
+                this.refreshDeck();
+              }
+            });
           }}
           title="Add Card"
         />
         <Button
           onPress={() => {
-            this.props.navigation.navigate("Quiz", { deck });
+            this.props.navigation.navigate("Quiz", { deckId: deck.id });
           }}
           title="Start Quiz"
         />
