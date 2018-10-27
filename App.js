@@ -4,6 +4,7 @@ import Home from "./screens/Home";
 import DeckForm from "./screens/DeckForm";
 import DeckDetails from "./screens/DeckDetails";
 import CardForm from "./screens/CardForm";
+import Quiz from "./screens/Quiz";
 import { Provider } from "react-redux";
 import Store from "./store";
 
@@ -30,6 +31,12 @@ const Stack = createStackNavigator({
     screen: CardForm,
     navigationOptions: {
       title: "Card Form"
+    }
+  },
+  Quiz: {
+    screen: Quiz,
+    navigationOptions: {
+      title: "Quiz"
     }
   }
 });

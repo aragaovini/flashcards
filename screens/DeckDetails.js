@@ -39,6 +39,12 @@ class DeckDetails extends React.Component {
           }}
           title="Add Card"
         />
+        <Button
+          onPress={() => {
+            this.props.navigation.navigate("Quiz", { deck });
+          }}
+          title="Start Quiz"
+        />
       </View>
     );
   }
