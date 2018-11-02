@@ -4,7 +4,8 @@ import {
   REMOVE_DECK,
   ADD_CARD,
   GET_DECK,
-  UPDATE_CARD
+  UPDATE_CARD,
+  RESET_CARDS
 } from "../constants/actionTypes";
 
 export function decks(state = [], action) {
@@ -53,6 +54,17 @@ export function deck(state = {}, action) {
       const newState = state;
       newState.cards = updatedCards;
       return newState;
+    case RESET_CARDS:
+      const resetedCards =
+        state.cards &&
+        state.cards.map(card => {
+          card.result = null;
+          card.answered = false;
+          return card;
+        });
+      const updatedState = state;
+      updatedState.cards = resetedCards;
+      return updatedState;
     default:
       return state;
   }

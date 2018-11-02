@@ -5,3 +5,4 @@ export const GET_DECK = "GET_DECK";
 
 export const ADD_CARD = "ADD_CARD";
 export const UPDATE_CARD = "UPDATE_CARD";
+export const RESET_CARDS = "RESET_CARDS";

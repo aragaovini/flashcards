@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { CORRECT, INCORRECT } from "../constants/quiz";
 import { connect } from "react-redux";
-import { ansWerCard } from "../actions/cards";
+import { answerCard, resetQuiz } from "../actions/cards";
 import { getDeckById } from "../actions/decks";
 
 class Quiz extends React.Component {
@@ -10,7 +10,9 @@ class Quiz extends React.Component {
     currentQuestion: {},
     currentPosition: 0,
     deck: {},
-    showAnswer: false
+    showAnswer: false,
+    score: 0,
+    showScore: false
   };
 
   componentDidMount() {
@@ -26,7 +28,6 @@ class Quiz extends React.Component {
 
   getQuestion() {
     const { deck } = this.state;
-    console.log(deck.cards);
     const currentQuestion =
       deck.cards &&
       deck.cards.find((question, index) => {
@@ -39,59 +40,111 @@ class Quiz extends React.Component {
         return !question.answered;
       });
     if (!currentQuestion) {
-      this.props.navigation.goBack();
+      this.calculateScore();
     }
   }
 
   answerQuestion(answer) {
+    this.setState({ showAnswer: false });
     const { saveAnswer } = this.props;
     const { currentQuestion, deck } = this.state;
     currentQuestion.answered = true;
     currentQuestion.result = answer;
     saveAnswer(currentQuestion, deck.id, () => {
-      this.getQuestion();
+      this.getNextQuestion();
     });
   }
 
   getNextQuestion() {
-    const { deck } = this.state;
-    if (deck.cards.length === currentPosition + 1) {
-      this.props.navigation.navigate("DeckDetails", { deckId: deck.id });
+    const { deck, currentPosition } = this.state;
+    if (deck.cards.length === currentPosition) {
+      this.calculateScore();
+      return false;
     }
+    const nextPosition = currentPosition + 1;
+
+    this.setState({
+      currentPosition: nextPosition,
+      currentQuestion: deck.cards[nextPosition - 1]
+    });
+  }
+
+  calculateScore() {
+    const { deck } = this.state;
+    const correctSum = deck.cards.filter(card => {
+      return card.result === CORRECT;
+    }).length;
+    const score = (correctSum / deck.cards.length * 100).toFixed(0);
+    this.setState({ score, showScore: true });
+  }
+
+  backToDeck() {
+    const { deck } = this.state;
+    this.props.navigation.navigate("DeckDetails", { deckId: deck.id });
+  }
+
+  restartDeckQuiz() {
+    const { restartQuiz } = this.props;
+    const { deck } = this.state;
+    restartQuiz(deck.id, () => {
+      this.backToDeck();
+    });
   }
 
   render() {
-    const { deck, currentQuestion, showAnswer, currentPosition } = this.state;
+    const {
+      deck,
+      currentQuestion,
+      showAnswer,
+      currentPosition,
+      score,
+      showScore
+    } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.appTitle}>Quiz: {deck.title}</Text>
 
-        {deck.cards && (
-          <Text>
-            {currentPosition}/{deck.cards.length}
-          </Text>
+        {!showScore && (
+          <View>
+            {deck.cards && (
+              <Text>
+                {currentPosition}/{deck.cards.length}
+              </Text>
+            )}
+            <Text>{currentQuestion.question}</Text>
+            {!showAnswer && (
+              <Button
+                title="Show Answer"
+                onPress={() => this.setState({ showAnswer: true })}
+              />
+            )}
+
+            {showAnswer && <Text>{currentQuestion.answer}</Text>}
+
+            <Button
+              disabled={!showAnswer}
+              title="Incorrect"
+              onPress={() => this.answerQuestion(INCORRECT)}
+            />
+            <Button
+              disabled={!showAnswer}
+              title="Correct"
+              onPress={() => this.answerQuestion(CORRECT)}
+            />
+          </View>
         )}
 
-        <Text>{currentQuestion.question}</Text>
-        {!showAnswer && (
-          <Button
-            title="Show Answer"
-            onPress={() => this.setState({ showAnswer: true })}
-          />
+        {showScore && (
+          <View>
+            <Text>{score}</Text>
+            <Text>You answered {deck.cards.length} questions!</Text>
+            <Button
+              title="Restart Quiz"
+              onPress={() => this.restartDeckQuiz()}
+            />
+            <Button title="Back to Deck" onPress={() => this.backToDeck()} />
+          </View>
         )}
-
-        {showAnswer && <Text>{currentQuestion.answer}</Text>}
-
-        <Button
-          disabled={!showAnswer}
-          title="Incorrect"
-          onPress={() => this.answerQuestion(INCORRECT)}
-        />
-        <Button
-          disabled={!showAnswer}
-          title="Correct"
-          onPress={() => this.answerQuestion(CORRECT)}
-        />
       </View>
     );
   }
@@ -105,8 +158,9 @@ const MapStateToProps = store => {
 
 const MapDispatchToProps = dispatch => ({
   saveAnswer: (card, deckId, callback) =>
-    dispatch(ansWerCard(card, deckId, callback)),
-  getDeck: (id, callback) => dispatch(getDeckById(id, callback))
+    dispatch(answerCard(card, deckId, callback)),
+  getDeck: (id, callback) => dispatch(getDeckById(id, callback)),
+  restartQuiz: (deckId, callback) => dispatch(resetQuiz(deckId, callback))
 });
 
 export default connect(MapStateToProps, MapDispatchToProps)(Quiz);

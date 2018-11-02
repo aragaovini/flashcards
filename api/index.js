@@ -3,8 +3,7 @@ import { DECK_STORAGE_KEY } from "../constants/api";
 
 export function addDeck(deck) {
   return getDecks().then(store => {
-    store = JSON.parse(store);
-    let decks = store ? store.decks : [];
+    let decks = parseDecks(store);
     decks.push(deck);
     return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify({ decks }));
   });
@@ -12,8 +11,7 @@ export function addDeck(deck) {
 
 export function removeDeck(id) {
   return getDecks().then(store => {
-    store = JSON.parse(store);
-    let decks = store ? store.decks : [];
+    let decks = parseDecks(store);
     decks = decks.filter(deckItem => {
       return deckItem.id != id;
     });
@@ -28,8 +26,7 @@ export function getDecks() {
 
 export function addCardToDeck(deckId, card) {
   return getDecks().then(store => {
-    store = JSON.parse(store);
-    let decks = store ? store.decks : [];
+    let decks = parseDecks(store);
 
     // Adding the card to the specific deck
     let deck = decks.filter(deck => {
@@ -51,8 +48,7 @@ export function addCardToDeck(deckId, card) {
 
 export function answerCardInDeck(deckId, card) {
   return getDecks().then(store => {
-    store = JSON.parse(store);
-    let decks = store ? store.decks : [];
+    let decks = parseDecks(store);
 
     // Updating the card in the specific deck
     let deck = decks.filter(deck => {
@@ -78,4 +74,39 @@ export function answerCardInDeck(deckId, card) {
 
     return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify({ decks }));
   });
+}
+
+export function restartCards(deckId) {
+  return getDecks().then(store => {
+    let decks = parseDecks(store);
+
+    // Updating the card in the specific deck
+    let deck = decks.filter(deck => {
+      return deck.id === deckId;
+    })[0];
+
+    // Reseting result and answered attributes
+    deck.cards =
+      deck.cards &&
+      deck.cards.map(card => {
+        card.result = null;
+        card.answered = false;
+        return card;
+      });
+
+    // Updating the deck
+    decks = decks.map(deckItem => {
+      if (deckItem.id === deckId) {
+        deckItem = deck;
+      }
+      return deckItem;
+    });
+
+    return AsyncStorage.setItem(DECK_STORAGE_KEY, JSON.stringify({ decks }));
+  });
+}
+
+function parseDecks(store) {
+  store = JSON.parse(store);
+  return store ? store.decks : [];
 }
