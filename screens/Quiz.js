@@ -136,7 +136,7 @@ class Quiz extends React.Component {
 
         {showScore && (
           <View>
-            <Text>{score}</Text>
+            <Text>{score}%</Text>
             <Text>You answered {deck.cards.length} questions!</Text>
             <Button
               title="Restart Quiz"
