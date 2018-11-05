@@ -7,6 +7,7 @@ import CardForm from "./screens/CardForm";
 import Quiz from "./screens/Quiz";
 import { Provider } from "react-redux";
 import Store from "./store";
+import { setLocalNotification } from "./utils/helpers";
 
 const Stack = createStackNavigator({
   Home: {
@@ -42,6 +43,10 @@ const Stack = createStackNavigator({
 });
 
 export default class App extends React.Component {
+  componentDidMount() {
+    setLocalNotification();
+  }
+
   render() {
     return (
       <Provider store={Store}>

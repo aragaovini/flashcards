@@ -4,6 +4,7 @@ import { CORRECT, INCORRECT } from "../constants/quiz";
 import { connect } from "react-redux";
 import { answerCard, resetQuiz } from "../actions/cards";
 import { getDeckById } from "../actions/decks";
+import { setLocalNotification, clearLocalNotification } from "../utils/helpers";
 
 class Quiz extends React.Component {
   state = {
@@ -77,6 +78,7 @@ class Quiz extends React.Component {
     currentQuestion.result = answer;
     saveAnswer(currentQuestion, deck.id, () => {
       this.getNextQuestion();
+      clearLocalNotification().then(setLocalNotification());
     });
   }
 
