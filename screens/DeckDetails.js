@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Animated } from "react-native";
 import CardCounter from "../components/CardCounter";
 import { getDeckById } from "../actions/decks";
 import { connect } from "react-redux";
@@ -10,10 +10,13 @@ class DeckDetails extends React.Component {
       title: "",
       cards: []
     },
-    deckId: ""
+    deckId: "",
+    opacity: new Animated.Value(0)
   };
 
   componentDidMount() {
+    const { opacity } = this.state;
+    Animated.timing(opacity, { toValue: 1, duration: 700 }).start();
     const { deckId } = this.props.navigation.state.params;
     this.setState({ deckId });
     this.props.getDeck(deckId);
@@ -28,9 +31,9 @@ class DeckDetails extends React.Component {
   }
 
   render() {
-    const { deck } = this.state;
+    const { deck, opacity } = this.state;
     return (
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, { opacity }]}>
         <Text style={styles.appTitle}>{deck.title}</Text>
         <CardCounter
           style={styles.description}
@@ -53,7 +56,7 @@ class DeckDetails extends React.Component {
           }}
           title="Start Quiz"
         />
-      </View>
+      </Animated.View>
     );
   }
 }

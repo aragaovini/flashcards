@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Animated } from "react-native";
 import { CORRECT, INCORRECT } from "../constants/quiz";
 import { connect } from "react-redux";
 import { answerCard, resetQuiz } from "../actions/cards";
@@ -12,18 +12,43 @@ class Quiz extends React.Component {
     deck: {},
     showAnswer: false,
     score: 0,
-    showScore: false
+    showScore: false,
+    opacity: new Animated.Value(0)
   };
 
   componentDidMount() {
+    const { opacity } = this.state;
     const { deckId } = this.props.navigation.state.params;
     this.props.getDeck(deckId);
+    Animated.timing(opacity, { toValue: 1, duration: 700 }).start();
   }
 
   componentWillReceiveProps({ deck }) {
     this.setState({ deck }, () => {
       this.getQuestion();
     });
+  }
+
+  resetQuizData() {
+    this.setState(
+      {
+        currentQuestion: {},
+        currentPosition: 0,
+        showAnswer: false,
+        score: 0,
+        showScore: false,
+        opacity: new Animated.Value(0)
+      },
+      () => {
+        const { deck, opacity } = this.state;
+        this.getQuestion();
+        this.props.getDeck(deck.id);
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700
+        }).start();
+      }
+    );
   }
 
   getQuestion() {
@@ -87,7 +112,7 @@ class Quiz extends React.Component {
     const { restartQuiz } = this.props;
     const { deck } = this.state;
     restartQuiz(deck.id, () => {
-      this.backToDeck();
+      this.resetQuizData();
     });
   }
 
@@ -98,10 +123,11 @@ class Quiz extends React.Component {
       showAnswer,
       currentPosition,
       score,
-      showScore
+      showScore,
+      opacity
     } = this.state;
     return (
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, { opacity }]}>
         <Text style={styles.appTitle}>Quiz: {deck.title}</Text>
 
         {!showScore && (
@@ -145,7 +171,7 @@ class Quiz extends React.Component {
             <Button title="Back to Deck" onPress={() => this.backToDeck()} />
           </View>
         )}
-      </View>
+      </Animated.View>
     );
   }
 }
