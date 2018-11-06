@@ -78,7 +78,6 @@ class Quiz extends React.Component {
     currentQuestion.result = answer;
     saveAnswer(currentQuestion, deck.id, () => {
       this.getNextQuestion();
-      clearLocalNotification().then(setLocalNotification());
     });
   }
 
@@ -98,11 +97,11 @@ class Quiz extends React.Component {
 
   calculateScore() {
     const { deck } = this.state;
-    const correctSum = deck.cards.filter(card => {
-      return card.result === CORRECT;
-    }).length;
+    const correctSum = deck.cards.filter(card => card.result === CORRECT)
+      .length;
     const score = (correctSum / deck.cards.length * 100).toFixed(0);
     this.setState({ score, showScore: true });
+    clearLocalNotification().then(setLocalNotification());
   }
 
   backToDeck() {

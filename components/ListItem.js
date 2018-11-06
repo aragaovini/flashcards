@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import CardCounter from "./CardCounter";
 
-export default class App extends React.Component {
+export default class ListItem extends React.Component {
   render() {
     const { deckTitle, totalCards } = this.props;
     return (
