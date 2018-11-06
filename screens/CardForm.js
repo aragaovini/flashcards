@@ -1,5 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  Vibration,
+  Alert
+} from "react-native";
 import { connect } from "react-redux";
 import { addNewCard } from "../actions/cards";
 import uuidv1 from "uuid/v1";
@@ -11,21 +19,41 @@ class CardForm extends React.Component {
   };
 
   setCardToDeck = () => {
-    const { deck, refreshDeck } = this.props.navigation.state.params;
+    if (this.isValid()) {
+      const { deck, refreshDeck } = this.props.navigation.state.params;
+      const { question, answer } = this.state;
+      const { navigation, addCard } = this.props;
+      const id = uuidv1();
+      let card = {
+        id,
+        question,
+        answer,
+        result: null,
+        answered: false
+      };
+      addCard(deck.id, card, () => {
+        refreshDeck();
+        navigation.navigate("DeckDetails", { deckId: deck.id });
+      });
+    }
+  };
+
+  isValid = () => {
     const { question, answer } = this.state;
-    const { navigation, addCard } = this.props;
-    const id = uuidv1();
-    let card = {
-      id,
-      question,
-      answer,
-      result: null,
-      answered: false
-    };
-    addCard(deck.id, card, () => {
-      refreshDeck();
-      navigation.navigate("DeckDetails", { deckId: deck.id });
-    });
+    if (!question || !answer) {
+      Vibration.vibrate(1000);
+      Alert.alert(
+        "Fields are required!",
+        `Please, complete all required fields.`,
+        [
+          {
+            text: "Ok"
+          }
+        ]
+      );
+      return false;
+    }
+    return true;
   };
 
   render() {

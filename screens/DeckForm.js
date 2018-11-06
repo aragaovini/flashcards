@@ -1,5 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  Vibration,
+  Alert
+} from "react-native";
 import { connect } from "react-redux";
 import { insertDeck } from "../actions/decks";
 import uuidv1 from "uuid/v1";
@@ -10,20 +18,36 @@ class DeckForm extends React.Component {
   };
 
   saveDeck = () => {
-    const { deckName } = this.state;
-    const id = uuidv1();
-    let deck = {
-      id,
-      title: deckName,
-      cards: []
-    };
+    if (this.isValid()) {
+      const { deckName } = this.state;
+      const id = uuidv1();
+      let deck = {
+        id,
+        title: deckName,
+        cards: []
+      };
 
-    this.props.saveDeck(deck, () => {
-      this.setState({ deckName: "" });
-      this.props.navigation.navigate("DeckDetails", {
-        deckId: id
+      this.props.saveDeck(deck, () => {
+        this.setState({ deckName: "" });
+        this.props.navigation.navigate("DeckDetails", {
+          deckId: id
+        });
       });
-    });
+    }
+  };
+
+  isValid = () => {
+    const { deckName } = this.state;
+    if (!deckName) {
+      Vibration.vibrate(1000);
+      Alert.alert("Deck's name is required!", `Please, complete it.`, [
+        {
+          text: "Ok"
+        }
+      ]);
+      return false;
+    }
+    return true;
   };
 
   render() {
